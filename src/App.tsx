@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import theme from "./theme/theme";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
+import { IconButton, ThemeProvider } from "@mui/material";
+import { closeSnackbar, SnackbarProvider } from "notistack";
 
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <SnackbarProvider
+          iconVariant={{ error: <ErrorOutlineOutlinedIcon sx={{ mr: 1 }} /> }}
+          action={(snackbarId) => (
+            <IconButton
+              sx={{ color: "white", textTransform: "none" }}
+              onClick={() => closeSnackbar(snackbarId)}
+            >
+              <CloseOutlinedIcon />
+            </IconButton>
+          )}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <RouterProvider router={router} />
+        </SnackbarProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }
 
