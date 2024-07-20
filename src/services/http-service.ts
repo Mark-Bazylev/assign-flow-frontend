@@ -5,7 +5,7 @@ class HttpService {
   private service: AxiosInstance;
   constructor() {
     this.service = axios.create({
-      baseURL: "http://localhost:3001/api/",
+      baseURL: process.env.REACT_APP_BASE_URL,
     });
     this.service.interceptors.response.use(undefined, this.errorInterceptor);
   }
