@@ -21,7 +21,7 @@ const authSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     login: create.asyncThunk(
-      async ({ email, password }: LoginParams, thunkAPI) => {
+      async ({ email, password }: LoginParams) => {
         return await authService.login({ email, password });
       },
       {

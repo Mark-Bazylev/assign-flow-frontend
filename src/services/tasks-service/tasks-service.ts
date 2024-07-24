@@ -1,4 +1,4 @@
-import {httpService} from "../http-service";
+import { httpService } from "../http-service";
 
 export enum TaskState {
   CREATED = "CREATED",
@@ -12,6 +12,7 @@ export interface Task {
   dueDate: string;
   description: string;
   state: TaskState;
+  position: number;
   projectId: string;
   createdAt: string;
   updatedAt: string;
@@ -19,8 +20,8 @@ export interface Task {
 
 class TasksService {
   public async getTasks(projectId?: string) {
-    const res = await httpService.get("tasks/getTasks/",{params: {projectId}});
-    console.log(res.data)
+    const res = await httpService.get("tasks/getTasks/" + projectId);
+    console.log(res.data);
     return res.data;
   }
   public async getTask(id: string) {
@@ -31,10 +32,7 @@ class TasksService {
     const res = await httpService.post(`tasks/createTask`, task);
     return res.data;
   }
-  public async updateTask(
-    id: string,
-    task: Omit<Task, "id" | "createdAt" | "updatedAt">,
-  ) {
+  public async updateTask(id: string, task: Partial<Task>) {
     const res = await httpService.patch(`tasks/updateTask/${id}`, task);
     return res.data;
   }

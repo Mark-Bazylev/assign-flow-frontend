@@ -43,6 +43,7 @@ const projectSlice = createAppSlice({
       {
         fulfilled(state, action) {
           state.currentProject = action.payload;
+          state.projects.push(action.payload);
         },
       },
     ),
@@ -59,6 +60,12 @@ const projectSlice = createAppSlice({
       {
         fulfilled(state, action) {
           state.currentProject = action.payload;
+          const projectIndex = state.projects.findIndex(
+            (project) => project.id === action.payload.id,
+          );
+          if (projectIndex !== -1) {
+            state.projects[projectIndex] = action.payload;
+          }
         },
       },
     ),
@@ -67,8 +74,11 @@ const projectSlice = createAppSlice({
         return await projectsService.deleteProject(id);
       },
       {
-        fulfilled(state, action) {
-          //should return a checker that its deleted
+        fulfilled(state,action) {
+          const projectIndex = state.projects.findIndex(
+            (project) => project.id === action.payload.id,
+          );
+          state.projects.splice(projectIndex, 1);
         },
       },
     ),

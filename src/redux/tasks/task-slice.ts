@@ -20,6 +20,7 @@ const taskSlice = createAppSlice({
       {
         fulfilled(state, action) {
           state.tasks = action.payload;
+          console.log("tasks:", state.tasks);
         },
       },
     ),
@@ -40,22 +41,71 @@ const taskSlice = createAppSlice({
       {
         fulfilled(state, action) {
           state.currentTask = action.payload;
+          state.tasks.push(action.payload);
         },
       },
     ),
     updateTask: create.asyncThunk(
-      async ({
-        id,
-        task,
-      }: {
-        id: string;
-        task: Omit<Task, "id" | "createdAt" | "updatedAt">;
-      }) => {
+      async ({ id, task }: { id: string; task: Partial<Task> }) => {
         return await tasksService.updateTask(id, task);
       },
       {
         fulfilled(state, action) {
           state.currentTask = action.payload;
+          const filteredTasks = state.tasks
+            .filter(
+              (task) =>
+                task.state === action.payload.state &&
+                task.id !== action.payload.id,
+            )
+            .sort((a, b) => a.position - b.position);
+          console.log(
+            "started as:",
+            state.tasks
+              .filter((task) => task.state === action.payload.state)
+              .map((task) => ({
+                id: task.id,
+                position: task.position,
+                name: task.name,
+              })),
+          );
+          console.log(
+            "step 1",
+            filteredTasks.map((task) => ({
+              id: task.id,
+              position: task.position,
+              name: task.name,
+            })),
+          );
+          filteredTasks.splice(action.payload.position - 1, 0, action.payload);
+
+          console.log(
+            "step 2",
+            filteredTasks.map((task) => ({
+              id: task.id,
+              position: task.position,
+              name: task.name,
+            })),
+          );
+
+          for (let i = 0; i < filteredTasks.length; i++) {
+            filteredTasks[i].position = i + 1;
+          }
+          console.log(
+            "step 3",
+            filteredTasks.map((task) => ({
+              id: task.id,
+              position: task.position,
+              name: task.name,
+            })),
+          );
+
+          const updatedMap = new Map<string, Task>();
+          filteredTasks.forEach((task) => updatedMap.set(task.id, task));
+          console.log("map", updatedMap);
+          state.tasks = state.tasks.map(
+            (item) => updatedMap.get(item.id) || item,
+          );
         },
       },
     ),
@@ -65,7 +115,10 @@ const taskSlice = createAppSlice({
       },
       {
         fulfilled(state, action) {
-          //should return a checker that its deleted
+          const taskIndex = state.tasks.findIndex(
+            (task) => task.id === action.payload.id,
+          );
+          state.tasks.splice(taskIndex, 1);
         },
       },
     ),
