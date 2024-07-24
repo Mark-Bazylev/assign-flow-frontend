@@ -1,5 +1,5 @@
 import { useAppDispatch } from "../redux/hooks";
-import { login } from "../redux/authentication/authSlice";
+import { login } from "../redux/authentication/auth-slice";
 import { useNavigate } from "react-router-dom";
 
 export function LoginPage() {
@@ -8,7 +8,7 @@ export function LoginPage() {
   async function onLogin() {
     try {
       await dispatch(login({ email: "mark@gmail.com", password: "secret" }));
-      navigate("/home");
+      navigate("/projects");
     } catch (e) {
       console.error(e);
     }

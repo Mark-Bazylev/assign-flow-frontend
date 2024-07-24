@@ -4,6 +4,7 @@ import { AuthLayout } from "../layouts/AuthLayout";
 import { TasksPage } from "../pages/TasksPage";
 import { LoginPage } from "../pages/LoginPage";
 import MainLayout from "../layouts/MainLayout";
+import {ProjectsPage} from "../pages/ProjectsPage";
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +16,11 @@ export const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           {
-            path: "home",
+            path:"projects",
+            element: <ProjectsPage/>
+          },
+          {
+            path: "tasks/:id",
             element: <TasksPage />,
           },
         ],
